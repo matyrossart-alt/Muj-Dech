@@ -104,6 +104,20 @@ h3:first-of-type{margin-top:0;}
 .empty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:16px;line-height:1.5;padding:20px;}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#14284B;color:#fff;padding:10px 16px;border-radius:12px;font-size:15px;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;}
 .toast.show{opacity:1;}
+.toast{z-index:30;}
+.player{position:fixed;inset:0;z-index:20;background:rgba(10,20,40,.88);display:flex;align-items:center;justify-content:center;padding:calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));}
+.player.hidden{display:none;}
+.pbox{width:100%;max-width:720px;background:#14284B;border:2px solid #E2C27A;border-radius:18px;padding:12px;color:#fff;}
+.phead{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.ptitle{flex:1;font-size:16px;font-weight:600;line-height:1.3;}
+.pclose{width:40px;height:40px;border-radius:12px;border:none;background:rgba(255,255,255,.12);color:#fff;font-size:20px;cursor:pointer;flex-shrink:0;}
+.pframe{position:relative;width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;overflow:hidden;}
+.pframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+.pacts{display:flex;gap:8px;margin-top:10px;}
+.pbtn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px;border-radius:12px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font:inherit;font-size:14px;font-weight:600;text-decoration:none;cursor:pointer;}
+.pbtn svg{width:20px;height:20px;}
+.pbtn.on{color:#FF8A94;}
+.pyt{flex:2;background:#E2C27A;color:#14284B;border-color:#E2C27A;}
 </style>
 </head>
 <body>
@@ -121,6 +135,17 @@ h3:first-of-type{margin-top:0;}
     <h2 id="dtitle"></h2>
     <div id="dlist"></div>
   </section>
+</div>
+<div class="player hidden" id="player" role="dialog" aria-modal="true" aria-labelledby="pTitle">
+  <div class="pbox">
+    <div class="phead"><p class="ptitle" id="pTitle"></p><button class="pclose" id="pClose" aria-label="Zavřít">✕</button></div>
+    <div class="pframe" id="pFrame"></div>
+    <div class="pacts">
+      <button class="pbtn" id="pFav"></button>
+      <button class="pbtn" id="pShare"></button>
+      <a class="pbtn pyt" id="pYt" target="_blank" rel="noopener">Otevřít v YouTube</a>
+    </div>
+  </div>
 </div>
 <div class="toast" id="toast"></div>
 <script>
@@ -242,11 +267,31 @@ function drawTiles(){
 
 function card([name,id]){
   const on=getFav().includes(id);
-  return `<div class="vid"><a class="vlink" href="https://youtu.be/${id}" target="_blank" rel="noopener"><span class="thumb" style="background-image:url('https://i.ytimg.com/vi/${id}/mqdefault.jpg')"></span><span><span class="vtitle">${esc(name)}</span><span class="vsrc" style="display:block">${esc(SRC)}</span></span></a><span class="acts"><button class="act fav-b${on?" on":""}" data-id="${id}" aria-label="${on?"Odebrat z oblíbených":"Přidat do oblíbených"}">${heart(on)}</button><button class="act share-b" data-id="${id}" aria-label="Sdílet video">${ICON_SHARE}</button></span></div>`;
+  return `<div class="vid"><a class="vlink" data-id="${id}" href="https://youtu.be/${id}" target="_blank" rel="noopener"><span class="thumb" style="background-image:url('https://i.ytimg.com/vi/${id}/mqdefault.jpg')"></span><span><span class="vtitle">${esc(name)}</span><span class="vsrc" style="display:block">${esc(SRC)}</span></span></a><span class="acts"><button class="act fav-b${on?" on":""}" data-id="${id}" aria-label="${on?"Odebrat z oblíbených":"Přidat do oblíbených"}">${heart(on)}</button><button class="act share-b" data-id="${id}" aria-label="Sdílet video">${ICON_SHARE}</button></span></div>`;
 }
 
 const dlist=document.getElementById("dlist");
+let pId=null;
+const player=document.getElementById("player");
+function pFavDraw(){const on=getFav().includes(pId);const b=document.getElementById("pFav");b.classList.toggle("on",on);b.innerHTML=heart(on)+(on?"V oblíbených":"Oblíbit");}
+function openPlayer(id){
+  pId=id;
+  document.getElementById("pTitle").textContent=ALL[id];
+  document.getElementById("pFrame").innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0" title="${esc(ALL[id])}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+  document.getElementById("pYt").href="https://youtu.be/"+id;
+  document.getElementById("pShare").innerHTML=ICON_SHARE+"Sdílet";
+  pFavDraw();
+  player.classList.remove("hidden");
+}
+function closePlayer(){player.classList.add("hidden");document.getElementById("pFrame").innerHTML="";pId=null;render();}
+document.getElementById("pClose").onclick=closePlayer;
+player.addEventListener("click",e=>{if(e.target===player)closePlayer();});
+document.getElementById("pFav").onclick=()=>{toggleFav(pId);pFavDraw();toast(getFav().includes(pId)?"Přidáno do oblíbených":"Odebráno z oblíbených");};
+document.getElementById("pShare").onclick=()=>share(ALL[pId],"https://youtu.be/"+pId);
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&pId)closePlayer();});
+
 dlist.addEventListener("click",e=>{
+  const vl=e.target.closest(".vlink"); if(vl){e.preventDefault();openPlayer(vl.dataset.id);return;}
   const st=e.target.closest(".tile.sub"); if(st){location.hash=st.dataset.h;return;}
   const fb=e.target.closest(".fav-b"), sb=e.target.closest(".share-b");
   if(fb){const id=fb.dataset.id;toggleFav(id);const on=getFav().includes(id);toast(on?"Přidáno do oblíbených":"Odebráno z oblíbených");render();}
@@ -372,7 +417,7 @@ function render(){
   if(wasHome)window.scrollTo(0,0);
 }
 document.getElementById("back").onclick=()=>{history.length>1?history.back():(location.hash="");};
-window.addEventListener("hashchange",render);
+window.addEventListener("hashchange",()=>{if(pId){player.classList.add("hidden");document.getElementById("pFrame").innerHTML="";pId=null;}render();});
 render();
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));}
 </script>
