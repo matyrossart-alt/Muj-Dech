@@ -1,4 +1,4 @@
-const V = "muj-dech-v5";
+const V = "muj-dech-v6";
 const PRECACHE = [
   "./",
   "index.html",

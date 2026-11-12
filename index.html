@@ -49,10 +49,33 @@ h3:first-of-type{margin-top:0;}
 .hshare{margin-left:auto;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
 .hshare svg,.act svg{width:22px;height:22px;}
 .grid{grid-template-rows:repeat(3,minmax(120px,1fr)) auto;grid-auto-rows:auto;}
-.tile.fav{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:flex-start;min-height:72px;padding:14px;gap:14px;--tbg:#14284B;--tline:#14284B;color:#fff;}
+.tile.fav{flex-direction:row;align-items:center;justify-content:flex-start;min-height:72px;padding:14px;gap:14px;--tbg:#14284B;--tline:#14284B;color:#fff;}
 .tile.fav .num{background:#E2C27A;color:#14284B;}
 .tile.fav .num svg{width:22px;height:22px;}
 .tile.fav .count{color:#C9D3E6;}
+.tile.fav .name{font-size:16px;}
+.tile.fav .num{width:40px;height:40px;flex-shrink:0;}
+.dcard{background:var(--tbg);border:1px solid var(--tline);border-radius:18px;padding:18px;text-align:center;margin-bottom:14px;}
+.dtitle2{font-weight:700;font-size:17px;margin-bottom:12px;}
+.dsw{width:100%;padding:16px;border-radius:14px;border:none;background:var(--tacc);color:#fff;font:inherit;font-size:18px;font-weight:700;cursor:pointer;}
+.dtime{font-size:44px;font-weight:700;color:var(--tacc);margin:10px 0;font-variant-numeric:tabular-nums;}
+.drow{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;margin-bottom:12px;}
+.drow label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px;}
+.drow input{font:inherit;font-size:17px;padding:10px;border-radius:10px;border:1px solid var(--tline);background:#fff;color:var(--text);width:100%;min-width:0;}
+.dsave{width:100%;padding:14px;border-radius:14px;border:2px solid var(--tacc);background:#fff;color:var(--tacc);font:inherit;font-size:17px;font-weight:700;cursor:pointer;}
+.dlink{display:block;margin-top:12px;font-size:14px;color:var(--tacc);}
+.dsum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
+.dbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.dl{font-size:12px;color:var(--muted);}.dv{font-size:22px;font-weight:700;color:var(--tacc);}.dd{font-size:11px;color:var(--muted);}
+.dnext{text-align:center;font-size:15px;margin:6px 0 12px;}
+.dchart{width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;}
+.dlog{list-style:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 12px;}
+.dlog li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px;}
+.dlog li:last-child{border-bottom:none;}
+.dlog b{margin-left:auto;}
+.ddel{border:none;background:none;color:var(--muted);font:inherit;font-size:13px;cursor:pointer;padding:6px;}
+.ddel.sure{color:#C0392B;font-weight:700;}
+.dnote{text-align:center;font-size:12px;color:var(--muted);margin-top:12px;}
 .vlink{flex:1;min-width:0;display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;align-self:stretch;}
 .acts{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
 .act{width:40px;height:40px;border-radius:12px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;}
@@ -172,6 +195,12 @@ function drawTiles(){
   b.innerHTML=`<span class="num">${heart(true)}</span><span><span class="name">Oblíbené</span><br><span class="count">${f?plural(f):"zatím nic"}</span></span>`;
   b.onclick=()=>{location.hash="fav";};
   tiles.appendChild(b);
+  const L=getLog();
+  const c=document.createElement("button");
+  c.className="tile fav";
+  c.innerHTML=`<span class="num">${ICON_BOOK}</span><span><span class="name">Dechový deník</span><br><span class="count">${L.length?"KP "+L[L.length-1].s+" s":"zatím nic"}</span></span>`;
+  c.onclick=()=>{location.hash="denik";};
+  tiles.appendChild(c);
 }
 
 function card([name,id]){
@@ -187,9 +216,90 @@ dlist.addEventListener("click",e=>{
   if(sb){const id=sb.dataset.id;share(ALL[id],"https://youtu.be/"+id);}
 });
 
+/* ---------- Dechový deník ---------- */
+const DKEY="mujdech-denik";
+function getLog(){try{const a=JSON.parse(localStorage.getItem(DKEY)||"[]");return Array.isArray(a)?a.filter(x=>x&&x.d&&x.s>0).sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0):[];}catch(e){return [];}}
+function setLog(a){try{localStorage.setItem(DKEY,JSON.stringify(a));}catch(e){}}
+const today=()=>{const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");};
+const fmtD=s=>{const [y,m,d]=s.split("-");return (+d)+". "+(+m)+". "+y;};
+const dayDiff=(a,b)=>Math.round((new Date(b+"T12:00")-new Date(a+"T12:00"))/864e5);
+const ICON_BOOK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3z"/><path d="M4 17a3 3 0 0 1 3-3h11"/><path d="M8 8h6"/></svg>';
+let sw={run:false,t0:0,iv:null};
+let delPending=null;
+
+function chart(log){
+  if(log.length<2)return "";
+  const W=320,H=140,P=24,max=Math.max(...log.map(x=>x.s))*1.15;
+  const xs=i=>P+(W-2*P)*(i/(log.length-1)), ys=v=>H-P-(H-2*P)*(v/max);
+  const pts=log.map((x,i)=>`${xs(i).toFixed(1)},${ys(x.s).toFixed(1)}`).join(" ");
+  return `<svg class="dchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Vývoj kontrolní pauzy"><line x1="${P}" y1="${H-P}" x2="${W-P}" y2="${H-P}" stroke="var(--line)"/><polyline points="${pts}" fill="none" stroke="var(--tacc)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>${log.map((x,i)=>`<circle cx="${xs(i).toFixed(1)}" cy="${ys(x.s).toFixed(1)}" r="5" fill="var(--tacc)"/><text x="${xs(i).toFixed(1)}" y="${(ys(x.s)-10).toFixed(1)}" text-anchor="middle" font-size="12" fill="var(--text)">${x.s}</text>`).join("")}</svg>`;
+}
+
+function renderDenik(){
+  const log=getLog();
+  let sum="";
+  if(log.length){
+    const st=log[0], la=log[log.length-1], ch=la.s-st.s;
+    const next=new Date(la.d+"T12:00"); next.setDate(next.getDate()+7);
+    const nd=next.getFullYear()+"-"+String(next.getMonth()+1).padStart(2,"0")+"-"+String(next.getDate()).padStart(2,"0");
+    const left=dayDiff(today(),nd);
+    sum=`<div class="dsum">
+      <div class="dbox"><span class="dl">Start</span><span class="dv">${st.s} s</span><span class="dd">${fmtD(st.d)}</span></div>
+      <div class="dbox"><span class="dl">Poslední</span><span class="dv">${la.s} s</span><span class="dd">${fmtD(la.d)}</span></div>
+      <div class="dbox"><span class="dl">Změna</span><span class="dv">${ch>0?"+":""}${ch} s</span><span class="dd">za ${dayDiff(st.d,la.d)} dní</span></div>
+    </div>
+    <p class="dnext">${left>0?`Další měření: <b>${fmtD(nd)}</b> (za ${left} ${left===1?"den":left<5?"dny":"dní"})`:`<b>Je čas na další měření.</b>`}</p>
+    ${chart(log)}`;
+  }
+  const rows=log.slice().reverse().map(x=>`<li><span>${fmtD(x.d)}</span><b>${x.s} s</b><button class="ddel${delPending===x.d+"|"+x.s?" sure":""}" data-k="${x.d}|${x.s}">${delPending===x.d+"|"+x.s?"Opravdu smazat?":"Smazat"}</button></li>`).join("");
+  dlist.classList.remove("big");
+  dlist.innerHTML=`
+    <div class="dcard">
+      <p class="dtitle2">Změř kontrolní pauzu</p>
+      <button class="dsw" id="swBtn">${sw.run?"Stop":"Spustit stopky"}</button>
+      <p class="dtime" id="swTime">${sw.run?Math.floor((Date.now()-sw.t0)/1000):0} s</p>
+      <div class="drow">
+        <label>Výsledek (s)<input id="kpVal" type="number" inputmode="numeric" min="1" max="300"></label>
+        <label>Datum<input id="kpDate" type="date" value="${today()}" max="${today()}"></label>
+      </div>
+      <button class="dsave" id="kpSave">Uložit do deníku</button>
+      <a class="dlink" href="https://youtu.be/_PGsTKuxb-4" target="_blank" rel="noopener">Jak měřit: video Test Kontrolní pauza (Bolt skóre)</a>
+    </div>
+    ${log.length?sum:`<p class="dnext">Zatím žádné měření. První zápis bude tvůj start.</p>`}
+    ${rows?`<ul class="dlog">${rows}</ul>`:""}
+    <p class="dnote">Deník je uložený jen v tomhle telefonu.</p>`;
+}
+
+function swTick(){const el=document.getElementById("swTime");if(el)el.textContent=Math.floor((Date.now()-sw.t0)/1000)+" s";}
+dlist.addEventListener("click",e=>{
+  if(e.target.id==="swBtn"){
+    if(!sw.run){sw={run:true,t0:Date.now(),iv:setInterval(swTick,250)};e.target.textContent="Stop";}
+    else{clearInterval(sw.iv);const s=Math.floor((Date.now()-sw.t0)/1000);sw={run:false,t0:0,iv:null};e.target.textContent="Spustit stopky";document.getElementById("swTime").textContent=s+" s";document.getElementById("kpVal").value=s||"";}
+  }
+  if(e.target.id==="kpSave"){
+    const s=parseInt(document.getElementById("kpVal").value,10), d=document.getElementById("kpDate").value||today();
+    if(!(s>0&&s<=300)){toast("Zadej výsledek v sekundách");return;}
+    const log=getLog(); log.push({d,s}); setLog(log); delPending=null; toast("Uloženo do deníku"); renderDenik();
+  }
+  const del=e.target.closest(".ddel");
+  if(del){
+    if(delPending!==del.dataset.k){delPending=del.dataset.k;renderDenik();return;}
+    const [d,s]=del.dataset.k.split("|"); const log=getLog(); const i=log.findIndex(x=>x.d===d&&x.s===+s);
+    if(i>=0)log.splice(i,1); setLog(log); delPending=null; toast("Smazáno"); renderDenik();
+  }
+});
+
 function render(){
   const home=document.getElementById("home"), det=document.getElementById("detail");
   const isFav=location.hash==="#fav";
+  if(location.hash==="#denik"){
+    det.style.setProperty("--tbg","#E7ECF5");det.style.setProperty("--tline","#BFCBE1");det.style.setProperty("--tacc","#1F3A68");
+    const wasHome1=!home.classList.contains("hidden");
+    document.getElementById("dtitle").textContent="Dechový deník";
+    renderDenik(); home.classList.add("hidden");det.classList.remove("hidden");if(wasHome1)window.scrollTo(0,0);
+    return;
+  }
+  if(sw.run){clearInterval(sw.iv);sw={run:false,t0:0,iv:null};}
   const m = location.hash.match(/^#d(\d+)(?:g(\d+))?$/);
   if(!isFav && (!m || !DATA[m[1]])){drawTiles();home.classList.remove("hidden");det.classList.add("hidden");return;}
   let title, groups;
