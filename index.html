@@ -42,7 +42,14 @@ h3:first-of-type{margin-top:0;}
 .thumb::after{content:"";position:absolute;inset:0;margin:auto;width:26px;height:26px;border-radius:50%;background:var(--tacc,#C8754F) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7l8 5-8 5z' fill='white'/%3E%3C/svg%3E") center/16px no-repeat;}
 #dlist.big .vid{flex-direction:column;justify-content:center;text-align:center;gap:12px;padding:16px;}
 #dlist.big .thumb{width:auto;height:auto;flex:1 1 0;min-height:0;max-height:260px;max-width:100%;aspect-ratio:16/9;}
-#dlist.big .vtitle{font-size:19px;}
+#dlist.big .vtitle{font-size:15px;line-height:1.25;}
+#dlist.big .vsrc{font-size:11px;margin-top:1px;}
+#dlist.big .vid{padding:10px;gap:4px;}
+#dlist.big .vlink{gap:6px;}
+#dlist.big .thumb{width:100%;max-height:min(75vw,420px);}
+#dlist.big .acts{gap:2px;}
+#dlist.big .act{width:34px;height:30px;}
+#dlist.big .act svg{width:20px;height:20px;}
 .vtitle{font-size:17px;font-weight:600;line-height:1.35;}
 .vsrc{font-size:12px;color:var(--muted);margin-top:3px;}
 .hidden{display:none;}
@@ -55,21 +62,26 @@ h3:first-of-type{margin-top:0;}
 .tile.fav .count{color:#C9D3E6;}
 .tile.fav .name{font-size:16px;}
 .tile.fav .num{width:40px;height:40px;flex-shrink:0;}
-.dcard{background:var(--tbg);border:1px solid var(--tline);border-radius:18px;padding:18px;text-align:center;margin-bottom:14px;}
+.dcard{background:linear-gradient(160deg,#DDF1F1 0%,#E7ECF5 55%,#FAF3E1 100%);border:1px solid #A9DCDA;border-radius:18px;padding:18px;text-align:center;margin-bottom:14px;}
 .dtitle2{font-weight:700;font-size:17px;margin-bottom:12px;}
-.dsw{width:100%;padding:16px;border-radius:14px;border:none;background:var(--tacc);color:#fff;font:inherit;font-size:18px;font-weight:700;cursor:pointer;}
-.dtime{font-size:44px;font-weight:700;color:var(--tacc);margin:10px 0;font-variant-numeric:tabular-nums;}
+.dsw{width:100%;padding:16px;border-radius:14px;border:2px solid #E2C27A;background:linear-gradient(135deg,#1F8A8A,#1F3A68);color:#fff;box-shadow:0 4px 12px rgba(31,58,104,.25);font:inherit;font-size:18px;font-weight:700;cursor:pointer;}
+.dtime{font-size:44px;font-weight:700;color:#B08A2E;margin:10px 0;font-variant-numeric:tabular-nums;}
 .drow{display:grid;grid-template-columns:1fr 1fr;gap:10px;text-align:left;margin-bottom:12px;}
 .drow label{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:4px;}
 .drow input{font:inherit;font-size:17px;padding:10px;border-radius:10px;border:1px solid var(--tline);background:#fff;color:var(--text);width:100%;min-width:0;}
-.dsave{width:100%;padding:14px;border-radius:14px;border:2px solid var(--tacc);background:#fff;color:var(--tacc);font:inherit;font-size:17px;font-weight:700;cursor:pointer;}
-.dlink{display:block;margin-top:12px;font-size:14px;color:var(--tacc);}
+.dsave{width:100%;padding:14px;border-radius:14px;border:none;background:linear-gradient(135deg,#E2C27A,#B08A2E);color:#14284B;font:inherit;font-size:17px;font-weight:700;cursor:pointer;}
+.dlink{display:block;margin-top:12px;font-size:14px;color:#1F3A68;}
 .dsum{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px;}
-.dbox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;}
-.dl{font-size:12px;color:var(--muted);}.dv{font-size:22px;font-weight:700;color:var(--tacc);}.dd{font-size:11px;color:var(--muted);}
-.dnext{text-align:center;font-size:15px;margin:6px 0 12px;}
-.dchart{width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;}
-.dlog{list-style:none;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 12px;}
+.dbox:nth-child(1){--bx:#E3F4F4;--bl:#A9DCDA;--bc:#1F8A8A;}
+.dbox:nth-child(2){--bx:#E7ECF5;--bl:#BFCBE1;--bc:#1F3A68;}
+.dbox:nth-child(3){--bx:#FAF3E1;--bl:#E8D49E;--bc:#A07C25;}
+.dbox{background:var(--bx);border:1px solid var(--bl);border-radius:14px;padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.dl{font-size:12px;color:var(--muted);}.dv{font-size:22px;font-weight:700;color:var(--bc);}.dd{font-size:11px;color:var(--muted);}
+.dnext{text-align:center;font-size:15px;margin:6px 0 12px;background:#FAF3E1;border:1px solid #E8D49E;border-radius:12px;padding:10px;color:#14284B;}
+.dnext b{color:#A07C25;}
+.dchart{width:100%;height:auto;background:#fff;border:1px solid #A9DCDA;border-radius:14px;margin-bottom:12px;}
+.dlog{list-style:none;background:#fff;border:1px solid #BFCBE1;border-radius:14px;padding:4px 12px;}
+.dlog li:nth-child(3n+1) b{color:#1F8A8A;}.dlog li:nth-child(3n+2) b{color:#1F3A68;}.dlog li:nth-child(3n) b{color:#A07C25;}
 .dlog li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:15px;}
 .dlog li:last-child{border-bottom:none;}
 .dlog b{margin-left:auto;}
@@ -232,7 +244,7 @@ function chart(log){
   const W=320,H=140,P=24,max=Math.max(...log.map(x=>x.s))*1.15;
   const xs=i=>P+(W-2*P)*(i/(log.length-1)), ys=v=>H-P-(H-2*P)*(v/max);
   const pts=log.map((x,i)=>`${xs(i).toFixed(1)},${ys(x.s).toFixed(1)}`).join(" ");
-  return `<svg class="dchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Vývoj kontrolní pauzy"><line x1="${P}" y1="${H-P}" x2="${W-P}" y2="${H-P}" stroke="var(--line)"/><polyline points="${pts}" fill="none" stroke="var(--tacc)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>${log.map((x,i)=>`<circle cx="${xs(i).toFixed(1)}" cy="${ys(x.s).toFixed(1)}" r="5" fill="var(--tacc)"/><text x="${xs(i).toFixed(1)}" y="${(ys(x.s)-10).toFixed(1)}" text-anchor="middle" font-size="12" fill="var(--text)">${x.s}</text>`).join("")}</svg>`;
+  return `<svg class="dchart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Vývoj kontrolní pauzy"><line x1="${P}" y1="${H-P}" x2="${W-P}" y2="${H-P}" stroke="var(--line)"/><defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#1F8A8A"/><stop offset=".5" stop-color="#1F3A68"/><stop offset="1" stop-color="#B08A2E"/></linearGradient><linearGradient id="da" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3FB8B3" stop-opacity=".35"/><stop offset="1" stop-color="#3FB8B3" stop-opacity="0"/></linearGradient></defs><polygon points="${xs(0).toFixed(1)},${H-P} ${pts} ${xs(log.length-1).toFixed(1)},${H-P}" fill="url(#da)"/><polyline points="${pts}" fill="none" stroke="url(#dg)" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/>${log.map((x,i)=>`<circle cx="${xs(i).toFixed(1)}" cy="${ys(x.s).toFixed(1)}" r="6" fill="#E2C27A" stroke="#1F3A68" stroke-width="2"/><text x="${xs(i).toFixed(1)}" y="${(ys(x.s)-10).toFixed(1)}" text-anchor="middle" font-size="12" fill="var(--text)">${x.s}</text>`).join("")}</svg>`;
 }
 
 function renderDenik(){
