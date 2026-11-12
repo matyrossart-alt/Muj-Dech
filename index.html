@@ -274,16 +274,39 @@ const dlist=document.getElementById("dlist");
 let pId=null;
 const player=document.getElementById("player");
 function pFavDraw(){const on=getFav().includes(pId);const b=document.getElementById("pFav");b.classList.toggle("on",on);b.innerHTML=heart(on)+(on?"V oblíbených":"Oblíbit");}
+let ytp=null, apiState=0, apiCb=null, fbTimer=null;
+function loadAPI(cb){
+  if(window.YT&&YT.Player){cb();return;}
+  apiCb=cb;
+  if(apiState)return;
+  apiState=1;
+  window.onYouTubeIframeAPIReady=()=>{apiState=2;if(apiCb){const c=apiCb;apiCb=null;c();}};
+  const sc=document.createElement("script");sc.src="https://www.youtube.com/iframe_api";sc.onerror=()=>{apiState=0;};document.head.appendChild(sc);
+}
+function noCaptions(){if(!ytp)return;try{ytp.unloadModule("captions");}catch(e){}try{ytp.unloadModule("cc");}catch(e){}}
+function plainFrame(id){
+  document.getElementById("pFrame").innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0&cc_load_policy=0&iv_load_policy=3" title="${esc(ALL[id])}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+}
 function openPlayer(id){
   pId=id;
   document.getElementById("pTitle").textContent=ALL[id];
-  document.getElementById("pFrame").innerHTML=`<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&playsinline=1&rel=0" title="${esc(ALL[id])}" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+  document.getElementById("pFrame").innerHTML='<div id="ytp"></div>';
   document.getElementById("pYt").href="https://youtu.be/"+id;
   document.getElementById("pShare").innerHTML=ICON_SHARE+"Sdílet";
   pFavDraw();
   player.classList.remove("hidden");
+  clearTimeout(fbTimer);
+  fbTimer=setTimeout(()=>{if(pId===id&&!ytp)plainFrame(id);},6000);
+  loadAPI(()=>{
+    if(pId!==id||ytp)return;
+    clearTimeout(fbTimer);
+    ytp=new YT.Player("ytp",{host:"https://www.youtube-nocookie.com",videoId:id,width:"100%",height:"100%",
+      playerVars:{autoplay:1,playsinline:1,rel:0,cc_load_policy:0,iv_load_policy:3},
+      events:{onReady:noCaptions,onApiChange:noCaptions,onStateChange:e=>{if(e.data===1)noCaptions();}}});
+  });
 }
-function closePlayer(){player.classList.add("hidden");document.getElementById("pFrame").innerHTML="";pId=null;render();}
+function stopPlayer(){clearTimeout(fbTimer);if(ytp){try{ytp.destroy();}catch(e){}}ytp=null;player.classList.add("hidden");document.getElementById("pFrame").innerHTML="";pId=null;}
+function closePlayer(){stopPlayer();render();}
 document.getElementById("pClose").onclick=closePlayer;
 player.addEventListener("click",e=>{if(e.target===player)closePlayer();});
 document.getElementById("pFav").onclick=()=>{toggleFav(pId);pFavDraw();toast(getFav().includes(pId)?"Přidáno do oblíbených":"Odebráno z oblíbených");};
@@ -417,7 +440,7 @@ function render(){
   if(wasHome)window.scrollTo(0,0);
 }
 document.getElementById("back").onclick=()=>{history.length>1?history.back():(location.hash="");};
-window.addEventListener("hashchange",()=>{if(pId){player.classList.add("hidden");document.getElementById("pFrame").innerHTML="";pId=null;}render();});
+window.addEventListener("hashchange",()=>{if(pId)stopPlayer();render();});
 render();
 if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js"));}
 </script>
