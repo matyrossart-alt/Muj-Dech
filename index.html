@@ -14,32 +14,54 @@
 <style>
 :root{--bg:#F7FAFB;--card:#FFFFFF;--line:#D9E4EA;--text:#14284B;--muted:#5A6B85;--accent:#1F3A68;--accent-soft:#E3F4F4;--gold:#B8923A;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);}
-.wrap{max-width:560px;margin:0 auto;padding:20px 16px 40px;}
-header{display:flex;align-items:center;gap:12px;margin-bottom:22px;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.wrap{max-width:560px;margin:0 auto;padding:calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom));min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;}
+#home,#detail{flex:1;display:flex;flex-direction:column;}
+#home.hidden,#detail.hidden{display:none;}
+header{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
 .logo{width:48px;height:48px;border-radius:14px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
 .logo svg{width:28px;height:28px;}
 h1{font-size:26px;font-weight:700;letter-spacing:-0.3px;color:var(--gold);}
 .logo{border:2px solid var(--gold);}
 .sub{font-size:14px;color:var(--muted);margin-top:2px;}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+.grid{flex:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(130px,1fr);gap:12px;}
 .tile{background:var(--tbg,var(--card));border:1px solid var(--tline,var(--line));border-radius:18px;padding:18px 14px;min-height:120px;display:flex;flex-direction:column;justify-content:space-between;gap:10px;cursor:pointer;text-align:left;font:inherit;color:inherit;transition:transform .12s;}
 .tile:active{transform:scale(.97);}
-.tile .num{width:32px;height:32px;border-radius:10px;background:var(--tacc,var(--accent));color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:15px;}
-.tile .name{font-size:16px;font-weight:600;line-height:1.3;}
-.tile .count{font-size:13px;color:var(--muted);}
+.tile .num{width:40px;height:40px;border-radius:12px;background:var(--tacc,var(--accent));color:#fff;font-weight:700;display:flex;align-items:center;justify-content:center;font-size:18px;}
+.tile .name{font-size:19px;font-weight:600;line-height:1.3;}
+.tile .count{font-size:14px;color:var(--muted);}
 .back{display:inline-flex;align-items:center;gap:6px;background:none;border:none;color:var(--accent);font:inherit;font-size:16px;font-weight:600;padding:6px 0;margin-bottom:12px;cursor:pointer;}
-h2{font-size:24px;font-weight:700;margin-bottom:18px;letter-spacing:-0.2px;}
+h2{font-size:24px;font-weight:700;margin-bottom:14px;letter-spacing:-0.2px;}
 h2{color:var(--tacc,var(--text));}
-h3{font-size:15px;font-weight:600;color:var(--tacc,var(--accent));margin:22px 0 10px;}
+#dlist{flex:1;display:flex;flex-direction:column;}
+h3{flex:none;font-size:15px;font-weight:600;color:var(--tacc,var(--accent));margin:12px 0 8px;}
 h3:first-of-type{margin-top:0;}
-.vid{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;margin-bottom:10px;text-decoration:none;color:inherit;transition:transform .12s;}
+.vid{flex:1 1 0;min-height:76px;display:flex;align-items:center;gap:14px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:10px;text-decoration:none;color:inherit;transition:transform .12s;}
 .vid:active{transform:scale(.98);}
-.thumb{width:96px;height:54px;border-radius:9px;background:var(--accent-soft) center/cover no-repeat;flex-shrink:0;position:relative;}
+.thumb{width:clamp(120px,42%,220px);aspect-ratio:16/9;height:auto;max-height:100%;border-radius:9px;background:var(--accent-soft) center/cover no-repeat;flex-shrink:0;position:relative;}
 .thumb::after{content:"";position:absolute;inset:0;margin:auto;width:26px;height:26px;border-radius:50%;background:var(--tacc,#C8754F) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 7l8 5-8 5z' fill='white'/%3E%3C/svg%3E") center/16px no-repeat;}
-.vtitle{font-size:15px;font-weight:600;line-height:1.35;}
+#dlist.big .vid{flex-direction:column;justify-content:center;text-align:center;gap:12px;padding:16px;}
+#dlist.big .thumb{width:auto;height:auto;flex:1 1 0;min-height:0;max-height:260px;max-width:100%;aspect-ratio:16/9;}
+#dlist.big .vtitle{font-size:19px;}
+.vtitle{font-size:17px;font-weight:600;line-height:1.35;}
 .vsrc{font-size:12px;color:var(--muted);margin-top:3px;}
 .hidden{display:none;}
+.hshare{margin-left:auto;width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--accent);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.hshare svg,.act svg{width:22px;height:22px;}
+.grid{grid-template-rows:repeat(3,minmax(120px,1fr)) auto;grid-auto-rows:auto;}
+.tile.fav{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:flex-start;min-height:72px;padding:14px;gap:14px;--tbg:#14284B;--tline:#14284B;color:#fff;}
+.tile.fav .num{background:#E2C27A;color:#14284B;}
+.tile.fav .num svg{width:22px;height:22px;}
+.tile.fav .count{color:#C9D3E6;}
+.vlink{flex:1;min-width:0;display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;align-self:stretch;}
+.acts{display:flex;flex-direction:column;gap:6px;flex-shrink:0;}
+.act{width:40px;height:40px;border-radius:12px;border:none;background:transparent;color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.act.on{color:#D0535E;}
+#dlist.big .vlink{flex-direction:column;justify-content:center;gap:12px;min-height:0;width:100%;}
+#dlist.big .acts{flex-direction:row;}
+.empty{flex:1;display:flex;align-items:center;justify-content:center;text-align:center;color:var(--muted);font-size:16px;line-height:1.5;padding:20px;}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%);background:#14284B;color:#fff;padding:10px 16px;border-radius:12px;font-size:15px;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;}
 </style>
 </head>
 <body>
@@ -48,6 +70,7 @@ h3:first-of-type{margin-top:0;}
     <header>
       <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#E2C27A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h8.5a2.5 2.5 0 1 0-2.34-3.24"/><path d="M3 12h15.5a2.5 2.5 0 1 1-2.34 3.24"/><path d="M4 16h5.5a2.5 2.5 0 1 1-2.34 3.24"/></svg></div>
       <div><h1>Můj dech</h1><p class="sub">Dechová cvičení s videi</p></div>
+      <button class="hshare" id="shareApp" aria-label="Sdílet aplikaci"></button>
     </header>
     <div class="grid" id="tiles"></div>
   </section>
@@ -57,6 +80,7 @@ h3:first-of-type{margin-top:0;}
     <div id="dlist"></div>
   </section>
 </div>
+<div class="toast" id="toast"></div>
 <script>
 const SRC = "Breath & Body Academy";
 const COLORS = [
@@ -106,31 +130,83 @@ const DATA = [
 ];
 
 function plural(n){return n===1?"1 video":(n>=2&&n<=4?n+" videa":n+" videí");}
-const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;");
+const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+const ICON_SHARE='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg>';
+const heart=on=>`<svg viewBox="0 0 24 24" fill="${on?"currentColor":"none"}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-9.2-8.6C1.3 8.4 3 5 6.4 5c2.4 0 4.1 1.6 5.6 3.6C13.5 6.6 15.2 5 17.6 5 21 5 22.7 8.4 21.2 11.4 19 15.6 12 20 12 20z"/></svg>`;
+const ALL={}; DATA.forEach(t=>t.groups.forEach(g=>g.videos.forEach(([n,id])=>ALL[id]=n)));
+
+const FKEY="mujdech-oblibene";
+function getFav(){try{const a=JSON.parse(localStorage.getItem(FKEY)||"[]");return Array.isArray(a)?a.filter(id=>ALL[id]):[];}catch(e){return [];}}
+function setFav(a){try{localStorage.setItem(FKEY,JSON.stringify(a));}catch(e){}}
+function toggleFav(id){const a=getFav();const i=a.indexOf(id);if(i>=0)a.splice(i,1);else a.push(id);setFav(a);}
+
+let tt;
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),2000);}
+async function share(title,url){
+  if(navigator.share){try{await navigator.share({title,url});}catch(e){} return;}
+  try{await navigator.clipboard.writeText(url);toast("Odkaz zkopírován");}catch(e){prompt("Zkopíruj odkaz:",url);}
+}
+const APP_URL=location.origin+location.pathname.replace(/index\.html$/,"");
+const shareBtn=document.getElementById("shareApp");
+shareBtn.innerHTML=ICON_SHARE;
+shareBtn.onclick=()=>share("Můj dech – dechová cvičení",APP_URL);
 
 const tiles = document.getElementById("tiles");
-DATA.forEach((t,i)=>{
-  const n = t.groups.reduce((a,g)=>a+g.videos.length,0);
-  const b = document.createElement("button");
-  b.className="tile";
-  setColor(b,COLORS[i%COLORS.length]);
-  b.innerHTML=`<span class="num">${i+1}</span><span><span class="name">${esc(t.name)}</span><br><span class="count">${plural(n)}</span></span>`;
-  b.onclick=()=>{location.hash="d"+i;};
+function drawTiles(){
+  tiles.innerHTML="";
+  DATA.forEach((t,i)=>{
+    const n = t.groups.reduce((a,g)=>a+g.videos.length,0);
+    const b = document.createElement("button");
+    b.className="tile";
+    setColor(b,COLORS[i%COLORS.length]);
+    b.innerHTML=`<span class="num">${i+1}</span><span><span class="name">${esc(t.name)}</span><br><span class="count">${plural(n)}</span></span>`;
+    b.onclick=()=>{location.hash="d"+i;};
+    tiles.appendChild(b);
+  });
+  const f=getFav().length;
+  const b=document.createElement("button");
+  b.className="tile fav";
+  b.innerHTML=`<span class="num">${heart(true)}</span><span><span class="name">Oblíbené</span><br><span class="count">${f?plural(f):"zatím nic"}</span></span>`;
+  b.onclick=()=>{location.hash="fav";};
   tiles.appendChild(b);
+}
+
+function card([name,id]){
+  const on=getFav().includes(id);
+  return `<div class="vid"><a class="vlink" href="https://youtu.be/${id}" target="_blank" rel="noopener"><span class="thumb" style="background-image:url('https://i.ytimg.com/vi/${id}/mqdefault.jpg')"></span><span><span class="vtitle">${esc(name)}</span><span class="vsrc" style="display:block">${esc(SRC)}</span></span></a><span class="acts"><button class="act fav-b${on?" on":""}" data-id="${id}" aria-label="${on?"Odebrat z oblíbených":"Přidat do oblíbených"}">${heart(on)}</button><button class="act share-b" data-id="${id}" aria-label="Sdílet video">${ICON_SHARE}</button></span></div>`;
+}
+
+const dlist=document.getElementById("dlist");
+dlist.addEventListener("click",e=>{
+  const fb=e.target.closest(".fav-b"), sb=e.target.closest(".share-b");
+  if(fb){const id=fb.dataset.id;toggleFav(id);const on=getFav().includes(id);toast(on?"Přidáno do oblíbených":"Odebráno z oblíbených");render();}
+  if(sb){const id=sb.dataset.id;share(ALL[id],"https://youtu.be/"+id);}
 });
 
 function render(){
-  const m = location.hash.match(/^#d(\d+)$/);
   const home=document.getElementById("home"), det=document.getElementById("detail");
-  if(!m || !DATA[m[1]]){home.classList.remove("hidden");det.classList.add("hidden");return;}
-  const t=DATA[m[1]];
-  setColor(det,COLORS[m[1]%COLORS.length]);
-  document.getElementById("dtitle").textContent=t.name;
-  document.getElementById("dlist").innerHTML=t.groups.map(g=>
-    (g.title?`<h3>${esc(g.title)}</h3>`:"")+
-    g.videos.map(([name,id])=>`<a class="vid" href="https://youtu.be/${id}" target="_blank" rel="noopener"><span class="thumb" style="background-image:url('https://i.ytimg.com/vi/${id}/mqdefault.jpg')"></span><span><span class="vtitle">${esc(name)}</span><span class="vsrc" style="display:block">${esc(SRC)}</span></span></a>`).join("")
-  ).join("");
-  home.classList.add("hidden");det.classList.remove("hidden");window.scrollTo(0,0);
+  const isFav=location.hash==="#fav";
+  const m = location.hash.match(/^#d(\d+)$/);
+  if(!isFav && (!m || !DATA[m[1]])){drawTiles();home.classList.remove("hidden");det.classList.add("hidden");return;}
+  let title, groups;
+  if(isFav){
+    det.style.setProperty("--tbg","#FAF3E1");det.style.setProperty("--tline","#E8D49E");det.style.setProperty("--tacc","#A07C25");
+    title="Oblíbené";
+    const f=getFav();
+    groups=f.length?[{videos:f.map(id=>[ALL[id],id])}]:[];
+  }else{
+    const t=DATA[m[1]];
+    setColor(det,COLORS[m[1]%COLORS.length]);
+    title=t.name; groups=t.groups;
+  }
+  const cnt=groups.reduce((a,g)=>a+g.videos.length,0);
+  const wasHome=!home.classList.contains("hidden");
+  document.getElementById("dtitle").textContent=title;
+  dlist.classList.toggle("big",cnt>0 && cnt<=3 && groups.length===1);
+  dlist.innerHTML=cnt?groups.map(g=>(g.title?`<h3>${esc(g.title)}</h3>`:"")+g.videos.map(card).join("")).join("")
+    :`<div class="empty">Zatím tu nic není.<br>U videa klepni na srdíčko a objeví se tady.</div>`;
+  home.classList.add("hidden");det.classList.remove("hidden");
+  if(wasHome)window.scrollTo(0,0);
 }
 document.getElementById("back").onclick=()=>{history.length>1?history.back():(location.hash="");};
 window.addEventListener("hashchange",render);
